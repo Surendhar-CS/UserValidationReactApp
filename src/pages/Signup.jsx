@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Container , Button, Form} from 'react-bootstrap';
 import '../styles/Signup.css';
-import {Link} from 'react-router-dom'
+import {Link} from 'react-router-dom';
+import axios from 'axios';
+import API_URL from '../../config/global';
+
 
 
 
@@ -26,9 +29,25 @@ import {Link} from 'react-router-dom'
 
     };
 
-    const handleSubmit=(e)=>{
+    const handleSubmit=async(e)=>{
         e.preventDefault();
-        console.log(formData);
+
+        try {
+            const response=await axios.post(
+            `${API_URL}/signup/verify`,formData
+            )
+            if(response.data===true)
+            {
+                alert("Confimation link sent to mail");
+            }
+            else  if(response.data===false)
+            {
+                alert("user already exists");
+            }
+            console.log(response);
+        } catch (e) {
+          console.log(e);  
+        }
     }
 
   return (

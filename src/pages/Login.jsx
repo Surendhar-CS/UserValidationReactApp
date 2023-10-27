@@ -1,7 +1,9 @@
 import React,{useState} from 'react';
 import { Container , Button, Form} from 'react-bootstrap';
 import '../styles/Login.css';
-
+import axios from 'axios';
+import API_URL from '../../config/global';
+import { useNavigate } from 'react-router-dom';
 export const Login = () => {
 
     const [formData,setformData] = useState({
@@ -10,6 +12,7 @@ export const Login = () => {
         password:"" 
     }
     );
+    const navigate=useNavigate();
     const handleChange=(e) =>{
         const{name,value}=e.target;
         setformData(
@@ -21,8 +24,39 @@ export const Login = () => {
 
     };
 
-    const handleSubmit=(e)=>{
-        e.preventDefault();
+    const handleSubmit=async(e)=>{
+
+        try {
+            e.preventDefault();
+                const response=await axios.post(
+                `${API_URL}/login`,formData
+                )
+
+        if(response.data==="Incorrect Username or Password")
+        {
+           alert("Invalid username or password");
+        }
+        else if(response.data=== "Server Busy")
+        {
+            alert("Check your usernamae")
+        }
+        else{
+          localStorage.setItem("userInfo",JSON.stringify(response.data));
+          navigate("/home");
+          
+    
+        }
+                console.log(response); 
+                console.log(response.data.token) 
+
+        }
+         catch (error) {
+            console.log(error);
+        }
+
+
+
+        
         console.log(formData);
     }
 
